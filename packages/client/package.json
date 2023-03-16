@@ -1,6 +1,6 @@
 {
   "name": "@waline/client",
-  "version": "2.14.2",
+  "version": "2.14.8",
   "description": "client for waline comment system",
   "keywords": [
     "valine",
@@ -89,21 +89,31 @@
     ]
   },
   "dependencies": {
-    "@vueuse/core": "^9.8.2",
-    "autosize": "^5.0.2",
-    "marked": "^4.2.4",
-    "vue": "^3.2.45"
+    "@vueuse/core": "^9.13.0",
+    "autosize": "^6.0.1",
+    "marked": "^4.2.12",
+    "vue": "^3.2.47"
   },
   "devDependencies": {
-    "@babel/core": "7.20.5",
+    "@babel/core": "7.21.0",
     "@babel/preset-env": "7.20.2",
     "@giphy/js-types": "4.4.0",
+    "@rollup/plugin-babel": "6.0.3",
+    "@rollup/plugin-commonjs": "24.0.1",
+    "@rollup/plugin-node-resolve": "15.0.1",
+    "@rollup/plugin-replace": "5.0.2",
+    "@rollup/plugin-terser": "0.4.0",
     "@types/autosize": "4.0.1",
     "@types/marked": "4.0.8",
-    "@types/node": "18.11.17",
+    "@types/node": "18.14.6",
     "@vitejs/plugin-vue": "4.0.0",
     "recaptcha-v3": "1.10.0",
-    "vite": "4.0.2"
+    "rollup": "3.18.0",
+    "rollup-plugin-dts": "5.2.0",
+    "rollup-plugin-ts": "3.2.0",
+    "typescript": "4.9.5",
+    "user-agent-data-types": "^0.3.1",
+    "vite": "4.1.4"
   },
   "engines": {
     "node": ">=14"

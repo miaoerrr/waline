@@ -329,6 +329,7 @@ import type {
   WalineSearchResult,
 } from '../typings/index.js';
 import type { WalineConfig, WalineEmojiConfig } from '../utils/index.js';
+import { userAgent } from '../utils/userAgent';
 
 const props = withDefaults(
   defineProps<{
@@ -400,6 +401,8 @@ const isWordNumberLegal = ref(false);
 const content = ref('');
 
 const isSubmitting = ref(false);
+
+const isImageListEnd = ref(false);
 
 const locale = computed(() => config.value.locale);
 
@@ -486,14 +489,15 @@ const submitComment = async (): Promise<void> => {
   if (config.value.recaptchaV3Key)
     token = await useReCaptcha(config.value.recaptchaV3Key).execute('social');
 
+  const ua = await userAgent();
   const comment: WalineCommentData = {
     comment: content.value,
     nick: userMeta.value.nick,
     mail: userMeta.value.mail,
     link: userMeta.value.link,
-    ua: navigator.userAgent,
     url: config.value.path,
     recaptchaV3: token,
+    ua,
   };
 
   if (userInfo.value?.token) {
@@ -523,14 +527,14 @@ const submitComment = async (): Promise<void> => {
       return alert(locale.value.mailError);
     }
 
-    // check comment
-    if (!comment.comment) {
-      editorRef.value?.focus();
-
-      return;
-    }
-
     if (!comment.nick) comment.nick = locale.value.anonymous;
+  }
+
+  // check comment
+  if (!comment.comment) {
+    editorRef.value?.focus();
+
+    return;
   }
 
   if (!isWordNumberLegal.value)
@@ -651,16 +655,23 @@ const onImageWallScroll = async (event: Event): Promise<void> => {
   const searchOptions = config.value.search as WalineSearchOptions;
   const keyword = gifSearchInputRef.value?.value || '';
 
-  if (percent < 0.9 || searchResults.loading) return;
+  if (percent < 0.9 || searchResults.loading || isImageListEnd.value) return;
 
   searchResults.loading = true;
 
-  searchResults.list = [
-    ...searchResults.list,
-    ...(searchOptions.more && searchResults.list.length
+  const searchResult =
+    searchOptions.more && searchResults.list.length
       ? await searchOptions.more(keyword, searchResults.list.length)
-      : await searchOptions.search(keyword)),
-  ];
+      : await searchOptions.search(keyword);
+
+  if (searchResult.length)
+    searchResults.list = [
+      ...searchResults.list,
+      ...(searchOptions.more && searchResults.list.length
+        ? await searchOptions.more(keyword, searchResults.list.length)
+        : await searchOptions.search(keyword)),
+    ];
+  else isImageListEnd.value = true;
 
   searchResults.loading = false;
 
@@ -671,6 +682,7 @@ const onImageWallScroll = async (event: Event): Promise<void> => {
 
 const onGifSearch = useDebounceFn((event: Event) => {
   searchResults.list = [];
+  isImageListEnd.value = false;
   void onImageWallScroll(event);
 }, 300);
 
