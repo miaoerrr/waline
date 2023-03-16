@@ -1,6 +1,7 @@
 /// <reference types="user-agent-data-types" />
 
 export const userAgent = async (): Promise<string> => {
+<<<<<<< HEAD
   if (typeof navigator === 'object') {
     const { userAgentData } = navigator;
     let { userAgent } = navigator;
@@ -22,6 +23,10 @@ export const userAgent = async (): Promise<string> => {
       return userAgent.replace('Windows NT 10.0', 'Windows NT 11.0');
 
     return userAgent;
+=======
+  if (!navigator) {
+    return '';
+>>>>>>> main
   }
 
   return '';
